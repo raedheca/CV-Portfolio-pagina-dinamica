@@ -22,8 +22,19 @@ export const useProjectsStore = defineStore('projects', () => {
       url: 'https://github.com/raedheca/cola-trabajo-jobs-laravel-12',
       demo_url: '',
       image: null,
-      start_date: '2022-05',
-      end_date: '2022-09'
+      start_date: '2025-12',
+      end_date: '2025-12'
+    },
+    {
+      id: 3,
+      name: 'CV Portfolio',
+      description: 'CV Portfolio Dinámico es una aplicación web moderna y minimalista desarrollada con Vue 3 que permite crear y gestionar un currículum vitae interactivo completamente desde el frontend, sin necesidad de configurar un backend complejo.',
+      technologies: ['Boostrap5', 'Vue3', 'JavaScript', 'CSS', 'HTML'],
+      url: 'https://github.com/raedheca/CV-Portfolio-pagina-dinamica',
+      demo_url: '',
+      image: null,
+      start_date: '2025-12',
+      end_date: '2025-12'
     }
   ])
 
