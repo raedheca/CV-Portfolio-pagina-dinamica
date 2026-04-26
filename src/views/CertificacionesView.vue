@@ -7,16 +7,6 @@ const show_image_modal = ref(false)
 const current_image = ref('')
 const current_title = ref('')
 
-function abrirCertificacion(cert) {
-  if (cert.pdfFile) {
-    window.open(cert.pdfFile, '_blank')
-  } else if (cert.type === 'file' && cert.file) {
-    window.open(cert.file, '_blank')
-  } else if (cert.type === 'url' && cert.url) {
-    window.open(cert.url, '_blank')
-  }
-}
-
 function abrirImagenModal(cert) {
   current_image.value = cert.previewImage
   current_title.value = cert.title
@@ -29,7 +19,6 @@ function cerrarImagenModal() {
 
 function listas_habilidades(description) {
   if (!description) return []
-  // Separar por comas, puntos y comas, o la palabra 'y'
   return description
     .split(/,|\sy\s/)
     .map(item => item.trim())
@@ -39,75 +28,79 @@ function listas_habilidades(description) {
 
 <template>
   <div class="certifications-view">
-    <div
-      class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4 gap-2">
-      <h1 class="h3 h2-md mb-0">Certificaciones</h1>
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4 gap-2">
+      <h1 class="h3 h2-md mb-0 section-heading">Certificaciones</h1>
     </div>
 
-    <div class="row g-3 g-md-4">
+    <div class="row g-3 g-md-4 stagger-children">
       <div v-for="cert in certifications_store.certifications" :key="cert.id" class="col-12 col-sm-6 col-lg-4">
-        <div class="card shadow-sm certification-card h-100">
-          <!-- Preview de la imagen del certificado -->
+        <article class="card shadow-sm certification-card h-100">
           <div v-if="cert.previewImage" class="certification-preview" @click="abrirImagenModal(cert)">
             <img :src="cert.previewImage" :alt="cert.title" class="w-100">
             <div class="preview-overlay">
               <i class="bi bi-zoom-in"></i>
+              <span>Ampliar</span>
+            </div>
+            <div class="cert-ribbon">
+              <i class="bi bi-patch-check-fill"></i>
             </div>
           </div>
 
           <div class="card-body p-3 p-md-4">
-            <h3 class="h6 mb-2">{{ cert.title }}</h3>
-            <p class="text-primary small mb-1 fw-semibold">{{ cert.issuer }}</p>
+            <h3 class="h6 mb-1">{{ cert.title }}</h3>
+            <p class="text-primary small mb-3 fw-semibold">
+              <i class="bi bi-award-fill me-1"></i>{{ cert.issuer }}
+            </p>
 
-            <ul v-if="cert.description" class="list-unstyled text-muted small mb-0">
-              <li v-for="(habilidad, index) in listas_habilidades(cert.description)" :key="index" class="mb-2">
-                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                {{ habilidad }}
+            <ul v-if="cert.description" class="list-unstyled cert-skills mb-0">
+              <li v-for="(habilidad, index) in listas_habilidades(cert.description)" :key="index">
+                <i class="bi bi-check2-circle"></i>
+                <span>{{ habilidad }}</span>
               </li>
             </ul>
           </div>
-        </div>
+        </article>
       </div>
     </div>
 
-    <!-- Modal para imagen ampliada -->
-    <div v-if="show_image_modal" class="modal show d-block" tabindex="-1" @click="cerrarImagenModal">
-      <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content bg-transparent border-0" @click.stop>
-          <div class="modal-header border-0 pb-0">
-            <h5 class="modal-title text-white">{{ current_title }}</h5>
-            <button type="button" class="btn-close btn-close-white" @click="cerrarImagenModal"></button>
-          </div>
-          <div class="modal-body p-3">
-            <img :src="current_image" :alt="current_title" class="w-100 rounded">
-          </div>
-          <div class="modal-footer border-0 pt-0">
-            <button type="button" class="btn btn-light" @click="cerrarImagenModal">Cerrar</button>
+    <transition name="page">
+      <div v-if="show_image_modal" class="modal show d-block" tabindex="-1" @click="cerrarImagenModal">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+          <div class="modal-content bg-transparent border-0" @click.stop>
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title text-white">{{ current_title }}</h5>
+              <button type="button" class="btn-close btn-close-white" @click="cerrarImagenModal"></button>
+            </div>
+            <div class="modal-body p-3">
+              <img :src="current_image" :alt="current_title" class="w-100 rounded modal-cert-img">
+            </div>
+            <div class="modal-footer border-0 pt-0">
+              <button type="button" class="btn btn-light" @click="cerrarImagenModal">Cerrar</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </transition>
     <div v-if="show_image_modal" class="modal-backdrop show"></div>
   </div>
 </template>
 
 <style scoped>
 .certification-card {
-  transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
 }
 
 .certification-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-4px);
+  box-shadow: 0 0.75rem 1.5rem var(--card-hover-shadow) !important;
 }
-
 
 .certification-preview {
   position: relative;
   overflow: hidden;
-  cursor: pointer;
-  background-color: #f8f9fa;
+  cursor: zoom-in;
+  background: linear-gradient(135deg, var(--bg-tertiary), rgba(139, 92, 246, 0.05));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,45 +111,92 @@ function listas_habilidades(description) {
   width: 100%;
   height: auto;
   object-fit: contain;
-  transition: transform 0.3s ease;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .certification-preview:hover img {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .preview-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.7) 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.4rem;
   opacity: 0;
   transition: opacity 0.3s ease;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .preview-overlay i {
-  color: white;
-  font-size: 3rem;
+  font-size: 2.5rem;
 }
 
 .certification-preview:hover .preview-overlay {
   opacity: 1;
 }
 
+.cert-ribbon {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-purple), var(--primary-purple-dark));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.cert-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cert-skills li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.5rem;
+  background: rgba(139, 92, 246, 0.04);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.cert-skills li:hover {
+  background: rgba(139, 92, 246, 0.1);
+  transform: translateX(3px);
+}
+
+.cert-skills i {
+  color: #10b981;
+  font-size: 0.95rem;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
 .modal.show {
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.92);
 }
 
 .modal-content {
   box-shadow: none;
 }
 
-.modal-body img {
+.modal-cert-img {
   max-height: 80vh;
   object-fit: contain;
 }
