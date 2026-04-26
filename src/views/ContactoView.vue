@@ -74,11 +74,10 @@ async function enviarFormulario() {
           <div class="card-body p-3 p-md-4">
             <div class="contact-header mb-4">
               <div class="contact-header-icon">
-                <i class="bi bi-chat-heart-fill"></i>
+                <i class="bi bi-chat-dots-fill"></i>
               </div>
               <div>
                 <h2 class="h5 mb-1">Hablemos</h2>
-                <p class="text-muted small mb-0">Respondo en menos de 24 hs.</p>
               </div>
             </div>
 
@@ -156,7 +155,7 @@ async function enviarFormulario() {
                     <i class="bi bi-tag me-1 text-primary"></i>Asunto
                   </label>
                   <input v-model="form.title" type="text" name="title" id="title" class="form-control" required
-                    placeholder="¿Sobre qué quieres hablar?" :disabled="is_sending" maxlength="120">
+                    placeholder="¿Que temas quieres hablar?" :disabled="is_sending" maxlength="120">
                 </div>
                 <div class="col-12 col-sm-6">
                   <label for="name" class="form-label">
@@ -180,7 +179,7 @@ async function enviarFormulario() {
                     <small class="text-muted">{{ form.message.length }} caracteres</small>
                   </label>
                   <textarea v-model="form.message" name="message" id="message" class="form-control" rows="6" required
-                    placeholder="Contame tu idea, propuesta o pregunta..." :disabled="is_sending" maxlength="2000"></textarea>
+                    placeholder="Cuentame tu  propuesta " :disabled="is_sending" maxlength="2000"></textarea>
                 </div>
                 <div class="col-12 d-flex justify-content-end">
                   <button type="submit" id="button" class="btn btn-primary submit-btn" :disabled="is_sending">
